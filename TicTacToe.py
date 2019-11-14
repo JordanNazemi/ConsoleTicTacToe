@@ -21,8 +21,8 @@ def check_winner(board):
 
     # First check see if won by rows
     for row in rows:
+        winner = True
         for character in row:
-            winner = True
             if (row[0] != character):
                 winner = False
         if winner:
@@ -30,16 +30,28 @@ def check_winner(board):
 
     # Now columns
     for column in range(0, len(rows[0])):
+        winner = True
         for row in range(1, len(rows[0])):
-            winner = True
             if rows[row][column] != rows[0][column]:
                 winner = False
         if winner:
             return True
 
     # Now Diagnols
-    # TODO
-    return winner
+    winner = True
+    for x in range(0, len(rows)):
+        if (rows[0][0] != rows[x][x]):
+            winner = False
+    if winner:
+        return True
+
+    # Now reverse diagnols
+    winner = True
+    for x in range(0, len(rows)):
+        if (rows[0][len(rows)-1] != rows[x][len(rows)-1-x]):
+            winner = False
+    if winner:
+        return True
 
 
 def check_full(board):
@@ -59,7 +71,7 @@ print("How large would you like the board?")
 size = int(input())
 board = create_board(size)
 
-while not winner:
+while True:
 
     print(board)
     print(f"Player {turn} choose a space!")
@@ -67,8 +79,25 @@ while not winner:
     space = input()
     board = add_piece(turn, space, board)
 
-    winner = check_full(board)
-    winner = check_winner(board)
+    if check_winner(board):
+        print(board)
+        print(f"Player {turn} wins!\tWould you like to play again?")
+        again = input()
+        if again == "y":
+            board = create_board(size)
+            continue
+        else:
+            break
+
+    if check_full(board):
+        print(board)
+        print("It's a draw!\tWould you like to play again? y/n")
+        again = input()
+        if again == "y":
+            board = create_board(size)
+            continue
+        else:
+            break
 
     if turn == "X":
         turn = "O"
